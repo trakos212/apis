@@ -1,7 +1,7 @@
 from flask import Flask,request
 import requests,os
 app = Flask(__name__)
-@app.route('/Telegram', methods=['GET'])
+@app.route('/Telegram')
 def home_page():
     user = str(request.args.get('user'))
     url = requests.get(f'https://t.me/{user}').text
