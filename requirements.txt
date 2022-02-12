@@ -1,3 +1,11 @@
 Flask
 requests
 gunicorn
+telegraph
+InstagramIG
+random
+json
+os
+bs4
+datetime
+user_agent
