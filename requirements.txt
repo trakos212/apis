@@ -3,7 +3,6 @@ requests
 gunicorn
 telegraph
 InstagramIG
-os
 bs4
 datetime
 user_agent
