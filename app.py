@@ -1,7 +1,7 @@
 from flask import Flask,request
 import requests,os
 app = Flask(__name__)
-@app.route('/Telegram')
+@app.route('/Telegram/Check')
 def home_page():
     user = str(request.args.get('user'))
     url = requests.get(f'https://t.me/{user}').text
@@ -13,4 +13,4 @@ def home_page():
         return data
 
 if __name__ == '__main__':             
-    app.run()        
+    app.run(debug=True)        
