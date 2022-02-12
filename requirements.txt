@@ -3,7 +3,6 @@ requests
 gunicorn
 telegraph
 InstagramIG
-json
 os
 bs4
 datetime
