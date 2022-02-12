@@ -1,5 +1,4 @@
 from flask import Flask,request
-import qrcode
 from InstagramIG import SidraELEzz
 import json,requests,random,os,time
 from telegraph import Telegraph
