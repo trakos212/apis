@@ -1,11 +1,7 @@
 from flask import Flask,request
 import requests
-import os,sys
 app = Flask(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
-@app.route('/',methods=['GET'])
-def home_page():
-    return redirect("https://dev-apis-x.pantheonsite.io/api/Website/", code=302)
 @app.route('/Telegram/Check/')
 def home_page():
     user = str(request.args.get('user'))
