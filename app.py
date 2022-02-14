@@ -32,21 +32,16 @@ def user_insta():
     'upgrade-insecure-requests': '1',
     'user-agent': 'Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36 Edg/96.0.1054.62'
     }
-	
-    try:
-        request1 = requests.get(url,headers=head,data={'__a': '1'}).json()
-        id_pro = request1['logging_page_id'].split('_')[1]
-        get = request1['graphql']
-        iid = get['user']
-        idd = iid['edge_follow']
-        iid1 = iid['edge_followed_by']
-        followed = iid1['count']
-        follow = idd['count']
-        photo = iid['profile_pic_url']
-        data = {'ok':'true','result':{'Followers':followed,'Following':follow,'Id':id_pro,'Photo':photo}}    
-        return data
-    except:
-        data = {'ok':'false','result':{'status':'error'}}    
-        return data
+    request1 = requests.get(url,headers=head,data={'__a': '1'}).json()
+    id_pro = request1['logging_page_id'].split('_')[1]
+    get = request1['graphql']
+    iid = get['user']
+    idd = iid['edge_follow']
+    iid1 = iid['edge_followed_by']
+    followed = iid1['count']
+    follow = idd['count']
+    photo = iid['profile_pic_url']
+    data = {'ok':'true','result':{'Followers':followed,'Following':follow,'Id':id_pro,'Photo':photo}}    
+    return data
 if __name__ == '__main__':             
     app.run(debug=True)        
