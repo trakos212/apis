@@ -1,5 +1,6 @@
 from flask import Flask,request
 import requests
+from user_agent import generate_user_agent
 app = Flask(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 @app.route('/Telegram/Check/')
@@ -36,5 +37,10 @@ def app2():
     datee = dewtools['data']
     data  {'date':datee,'status':'loaded'}
     return data
+@app.route('/user-agent')
+def arabicge():
+    r = str(''.join((generate_user_agent() for i in range(1))))
+    data_set = {'data':f'{r}','status':'loaded'}
+    return data_set
 if __name__ == '__main__':             
     app.run(debug=True)        
