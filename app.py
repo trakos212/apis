@@ -18,15 +18,15 @@ def app3():
     user = str(request.args.get('user'))
     isChannel = requests.get(f'https://t.me/s/{user}/1', allow_redirects=False).status_code
     if isChannel == 200:
-        data_set = {'type': 'Channel', 'stats': 'loaded'}
+        data_set = {'type': 'Channel', 'status': 'loaded'}
         return data_set
     elif isChannel == 302:
         isUser = requests.get(f'https://t.me/{user}').text
         if not 'members' in isUser:
-            data_set = {'type': 'Pierson', 'stats': 'loaded'}
+            data_set = {'type': 'Person', 'status': 'loaded'}
             return data_set
         elif 'members' in isUser:
-            data_set = {'type': 'Group', 'stats': 'loaded'}
+            data_set = {'type': 'Group', 'status': 'loaded'}
             return data_set
 
 
