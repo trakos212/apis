@@ -2,4 +2,4 @@ Flask
 requests
 gunicorn
 user_agent
-random
+random==3.9.7
