@@ -3,7 +3,7 @@ import json
 import flask
 from flask import *
 
-app = Flask(name)
+app = Flask(__name__)
 
 @app.route("/send")
 def start():
