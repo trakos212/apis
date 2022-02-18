@@ -4,6 +4,9 @@ import flask
 from flask import *
 
 app = Flask(__name__)
+@app.route("/coin")
+def coin():
+    return "999999"
 @app.route("/send")
 def start():
     url = f"https://ingame.id.supercell.com/api/account/login"
