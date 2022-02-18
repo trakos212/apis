@@ -64,8 +64,8 @@ def log():
     }
     reqq = requests.post(url2, headers=headers, data=data2).json()
     return reqq
- @app.route("/r")
- def r();
+@app.route("/send")
+def start():
     return '99999'
 if __name__ =='__main__':
     app.run(debug=True)
