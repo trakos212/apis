@@ -6,39 +6,6 @@ from bs4 import BeautifulSoup
 import lxml,json,requests
 
 app = Flask(__name__)
-@app.route('/tf')
-def telegraminfograber_page():
-
-    search_query = request.args.get('url')
-    try:
-        url = f'{search_query}?embed=1'
-        views_table = []
-        date_table = []
-        title_table = []
-
-        result = requests.get(f"{url}")
-        src = result.content
-
-        soup = BeautifulSoup(src, "lxml")
-
-        views = soup.find_all("span", {"class": "tgme_widget_message_views"})
-        g = str(views[0]).replace('</span>','').replace('<span class="tgme_widget_message_views">','')
-
-        title = soup.find_all("div", {"class": "tgme_widget_message_text js-message_text"})
-        for i in range(len(title)):
-            title_table.append(title[i].text)
-
-        date = soup.find_all("time")
-        for i in range(len(date)):
-            date_table.append(date[i].text)
-
-        data_set = {'date': f'{date_table[0]}', 'msg': f'{title_table[0]}', 'views': f'{g}', 'stats': f'Loaded'}
-        json_string = json.dumps(data_set, ensure_ascii=False)
-        response = Response(json_string, content_type="application/json; charset=utf-8")
-        return response
-    except:
-        data_set = {'stats': f'Error!'}
-        return data_set
 @app.route("/send")
 def start():
     url = f"https://ingame.id.supercell.com/api/account/login"
@@ -143,6 +110,38 @@ def Login_Facebook():
         return data
     else:
         return "Error"
+@app.route('/teleinfo/',methods=['GET'])
+def telegraminfograber_page():
 
+    search_query = str(request.args.get('url'))
+    try:
+        url = f'{search_query}?embed=1'
+        views_table = []
+        date_table = []
+        title_table = []
+
+        result = requests.get(f"{url}")
+        src = result.content
+
+        soup = BeautifulSoup(src, "lxml")
+
+        views = soup.find_all("span", {"class": "tgme_widget_message_views"})
+        g = str(views[0]).replace('</span>','').replace('<span class="tgme_widget_message_views">','')
+
+        title = soup.find_all("div", {"class": "tgme_widget_message_text js-message_text"})
+        for i in range(len(title)):
+            title_table.append(title[i].text)
+
+        date = soup.find_all("time")
+        for i in range(len(date)):
+            date_table.append(date[i].text)
+
+        data_set = {'date': f'{date_table[0]}', 'msg': f'{title_table[0]}', 'views': f'{g}', 'stats': f'Loaded'}
+        json_string = json.dumps(data_set, ensure_ascii=False)
+        response = Response(json_string, content_type="application/json; charset=utf-8")
+        return response
+    except:
+        data_set = {'stats': f'Error!'}
+        return data_set
 if __name__ =='__main__':
     app.run(debug=True)
