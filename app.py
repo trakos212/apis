@@ -6,10 +6,10 @@ from bs4 import BeautifulSoup
 import lxml,json,requests
 
 app = Flask(__name__)
-@app.route('/tf',methods=['GET'])
+@app.route('/tf')
 def telegraminfograber_page():
 
-    search_query = str(request.args.get('url'))
+    search_query = request.args.get('url')
     try:
         url = f'{search_query}?embed=1'
         views_table = []
