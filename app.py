@@ -1,115 +1,42 @@
-import requests
-
-import json
-
-import flask
-
-from flask import *
-
 from bs4 import BeautifulSoup
-
 import lxml,json,requests
+from flask import *
 
 app = Flask(__name__)
 
-@app.route("/or/")
+@app.route('/teleinfo/',methods=['GET'])
+def telegraminfograber_page():
 
-def setorder():
+    search_query = str(request.args.get('url'))
+    try:
+        url = f'{search_query}?embed=1'
+        views_table = []
+        date_table = []
+        title_table = []
 
-    username = request.args.get("username")
+        result = requests.get(f"{url}")
+        src = result.content
 
-    rq = requests.get(f"https://echoar.ml/Apimedia/infon.php?user={username}").json()["Info"]
+        soup = BeautifulSoup(src, "lxml")
 
-    pro = rq['image']
+        views = soup.find_all("span", {"class": "tgme_widget_message_views"})
+        g = str(views[0]).replace('</span>','').replace('<span class="tgme_widget_message_views">','')
 
-    id = rq['account_id']
+        title = soup.find_all("div", {"class": "tgme_widget_message_text js-message_text"})
+        for i in range(len(title)):
+            title_table.append(title[i].text)
 
-    header = {
+        date = soup.find_all("time")
+        for i in range(len(date)):
+            date_table.append(date[i].text)
 
-        'X-Access': 'cafegram',
-
-        'X-Version': '3',
-
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-
-        'User-Agent': 'Dalvik/2.1.0 (Linux; U; Android 11; SM-A305F Build/RP1A.200720.012)',
-
-        'Host': 'apronista.ir',
-
-        'Connection': 'Keep-Alive',
-
-        'Accept-Encoding': 'gzip',
-
-        'Content-Length': '609'
-
-    }
-
-    data = {
-
-        "x_version": "3",
-
-        "post_photo": "",
-
-        "post_text": "",
-
-        "speed": "false",
-
-        "requested": "1000",
-
-        "full_name": "",
-
-        "post_pk": "",
-
-        "user_pk": "51993501593",
-
-        "post_code": "",
-
-        "action": "follow",
-
-        "ids": "",
-
-        "user_token": "659cdce96cfed3f3d8e2e9fb797b3df3",
-
-        "pk": f"{id}",
-
-        "user_photo": f"""{pro}""",
-
-        "username": f"{username}"
-
-    }
-
-    req = requests.post("http://apronista.ir/api/v1/addOrder.php", headers=header, data=data).text
-
-    if "success" in req:
-
-        sp = {
-
-            "status":"ok",
-
-            "data":"Done Send 1000 Follow"
-
-        }
-
-        return sp
-
-    elif "nok" in req:
-
-        sp = {
-
-            "status": "nok",
-
-            "data": "Error"
-
-        }
-
-        return sp
-    if __name__ =='__main__':
-
-    app.run(debug=True)
-
+        data_set = {'date': f'{date_table[0]}', 'msg': f'{title_table[0]}', 'views': f'{g}', 'stats': f'Loaded'}
+        json_string = json.dumps(data_set, ensure_ascii=False)
+        response = Response(json_string, content_type="application/json; charset=utf-8")
+        return response
+    except:
+        data_set = {'stats': f'Error!'}
+        return data_set
     
-       
-
-
-
-    
+if __name__ == "__main__":
+    app.run()
