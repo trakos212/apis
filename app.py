@@ -3,7 +3,7 @@ import lxml,json,requests
 from flask import *
 
 app = Flask(__name__)
-@app.route("/data/)
+@app.route("/data/")
 def info():
     userid = request.args.get("id")
     try:
