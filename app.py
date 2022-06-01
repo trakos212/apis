@@ -6,13 +6,10 @@ app = Flask(__name__)
 @app.route("/data/")
 def info():
     userid = request.args.get("id")
-    try:
-        URL = f"https://i.instagram.com/api/v1/users/{userid}/info/"
-        headers = {'User-Agent':'Instagram 76.0.0.15.395 Android (24/7.0; 640dpi; 1440x2560; samsung; SM-G930F; herolte; samsungexynos8890; en_US; 138226743)'} 
-        response = requests.get(URL, headers=headers)
-        return (response.json()["user"])
-    except:
-        return "Error"
+    URL = f"https://i.instagram.com/api/v1/users/{userid}/info"
+    headers = {'User-Agent':'Instagram 76.0.0.15.395 Android (24/7.0; 640dpi; 1440x2560; samsung; SM-G930F; herolte; samsungexynos8890; en_US; 138226743)'} 
+    response = requests.get(URL, headers=headers)
+    return (response.json()["user"])
 @app.route('/teleinfo/',methods=['GET'])
 def telegraminfograber_page():
 
